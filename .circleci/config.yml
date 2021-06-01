@@ -4,7 +4,7 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here   
+      # Add parameter here
     steps:
       - run:
           name: Destroy environments
@@ -16,7 +16,7 @@ commands:
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
-      # Add parameter here     
+      # Add parameter here
     steps:
       - run:
           name: Revert migrations
@@ -24,14 +24,14 @@ commands:
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = 1
-            if(( $SUCCESS==1 )); 
+            if(( $SUCCESS==1 ));
             then
             #  cd ~/project/backend
             #  npm install
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
             fi
-            
+
 jobs:
   build-frontend:
     docker:
@@ -44,7 +44,7 @@ jobs:
           name: Build front-end
           command: |
             # Your code here
-            exit 1
+            npm i && npm run build
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -60,7 +60,7 @@ jobs:
           name: Back-end build
           command: |
              # Your code here
-             exit 1
+             npm i && npm run build
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -68,40 +68,64 @@ jobs:
   test-frontend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
+      - checkout # Checkout code from git
+      - restore_cache: # Restore from cache
+          keys: [test-frontend]
       # Your job code here
-                
+      - run:
+          name: Front-end test
+          command: |
+             # Your code here
+             npm run test
   test-backend:
     docker:
       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
+      - checkout # Checkout code from git
+      - restore_cache: # Restore from cache
+          keys: [test-backend]
       # Your job code here
-            
+      - run:
+          name: Back-end test
+          command: |
+             # Your code here
+             npm run test
   scan-frontend:
     docker:
-      # Docker image here
+       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
+      - checkout # Checkout code from git
+      - restore_cache: # Restore from cache
+          keys: [test-backend]
       # Your job code here
-
+      - run:
+          name: Back-end test
+          command: |
+             # Your code here
+             npm run test:cov
   scan-backend:
     docker:
-      # Docker image here
+       # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
+      - checkout # Checkout code from git
+      - restore_cache: # Restore from cache
+          keys: [test-backend]
       # Your job code here
-
+      - run:
+          name: Back-end test
+          command: |
+             # Your code here
+             npm run test:cov
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
     steps:
-      # Checkout code from git
+      - checkout # Checkout code from git
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -109,7 +133,7 @@ jobs:
               --template-file .circleci/files/backend.yml \
               #--tags project=your-tag \
               # --stack-name "your back-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
+              # --parameter-overrides ID="your workflow id"
               exit 1
       - run:
           name: Ensure front-end infrastructure exist
@@ -118,7 +142,7 @@ jobs:
               --template-file .circleci/files/frontend.yml \
               #--tags project=your-tag \
               # --stack-name "your front-end stack name with workflow id" \
-              # --parameter-overrides ID="your workflow id"  
+              # --parameter-overrides ID="your workflow id"
               exit 1
       - run:
           name: Add back-end ip to ansible inventory
@@ -129,7 +153,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
 
   configure-infrastructure:
     docker:
@@ -148,7 +172,7 @@ jobs:
           command: |
             # Your code here
             exit 1
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
 
   run-migrations:
     docker:
@@ -165,7 +189,7 @@ jobs:
           command: |
             # Your code here
             exit 1
-     # Here's where you will add some code to rollback on failure      
+     # Here's where you will add some code to rollback on failure
 
   deploy-frontend:
     docker:
@@ -186,8 +210,8 @@ jobs:
           name: Deploy frontend objects
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure      
-                    
+      # Here's where you will add some code to rollback on failure
+
   deploy-backend:
     docker:
       # Docker image here that supports Ansible
@@ -203,11 +227,11 @@ jobs:
           name: Deploy backend
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
+      # Lightweight Docker image
     steps:
       # Checkout code from git
       - run:
@@ -226,7 +250,7 @@ jobs:
           name: Frontend smoke test.
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure
 
   cloudfront-update:
     docker:
@@ -241,7 +265,7 @@ jobs:
           name: Update cloudfront distribution
           command: |
             # your code here
-      # Here's where you will add some code to rollback on failure  
+      # Here's where you will add some code to rollback on failure
 
 cleanup:
     docker:
@@ -261,7 +285,7 @@ cleanup:
             then
               # your code here
             fi
-            
+
 
 workflows:
   default:

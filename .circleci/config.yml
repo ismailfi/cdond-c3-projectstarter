@@ -38,8 +38,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
       - run:
           name: Build front-end
           command: |
@@ -56,8 +54,6 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       - run:
           name: Back-end build
           command: |
@@ -76,7 +72,7 @@ jobs:
     steps:
       - checkout # Checkout code from git
       - restore_cache: # Restore from cache
-          keys: [test-frontend]
+          keys: [frontend-build]
       # Your job code here
       - run:
           name: Front-end test
@@ -91,7 +87,7 @@ jobs:
     steps:
       - checkout # Checkout code from git
       - restore_cache: # Restore from cache
-          keys: [test-backend]
+          keys: [backend-build]
       # Your job code here
       - run:
           name: Back-end test
@@ -106,7 +102,7 @@ jobs:
     steps:
       - checkout # Checkout code from git
       - restore_cache: # Restore from cache
-          keys: [test-backend]
+          keys: [frontend-build]
       # Your job code here
       - run:
           name: Back-end test
@@ -121,7 +117,7 @@ jobs:
     steps:
       - checkout # Checkout code from git
       - restore_cache: # Restore from cache
-          keys: [test-backend]
+          keys: [backend-build]
       # Your job code here
       - run:
           name: Back-end test

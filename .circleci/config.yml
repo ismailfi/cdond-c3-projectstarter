@@ -12,7 +12,6 @@ commands:
           command: |
             # Your code here
             exit 1
-
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -44,7 +43,7 @@ jobs:
           name: Build front-end
           command: |
             # Your code here
-            npm i && npm run build
+            exit 1
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -60,7 +59,7 @@ jobs:
           name: Back-end build
           command: |
              # Your code here
-             npm i && npm run build
+             exit 1
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -68,64 +67,40 @@ jobs:
   test-frontend:
     docker:
       # Docker image here
-      - image: circleci/node:13.8.0
     steps:
-      - checkout # Checkout code from git
-      - restore_cache: # Restore from cache
-          keys: [test-frontend]
+      # Checkout code from git
+      # Restore from cache
       # Your job code here
-      - run:
-          name: Front-end test
-          command: |
-             # Your code here
-             npm run test
+
   test-backend:
     docker:
       # Docker image here
-      - image: circleci/node:13.8.0
     steps:
-      - checkout # Checkout code from git
-      - restore_cache: # Restore from cache
-          keys: [test-backend]
+      # Checkout code from git
+      # Restore from cache
       # Your job code here
-      - run:
-          name: Back-end test
-          command: |
-             # Your code here
-             npm run test
+
   scan-frontend:
     docker:
-       # Docker image here
-      - image: circleci/node:13.8.0
+      # Docker image here
     steps:
-      - checkout # Checkout code from git
-      - restore_cache: # Restore from cache
-          keys: [test-backend]
+      # Checkout code from git
+      # Restore from cache
       # Your job code here
-      - run:
-          name: Back-end test
-          command: |
-             # Your code here
-             npm run test:cov
+
   scan-backend:
     docker:
-       # Docker image here
-      - image: circleci/node:13.8.0
+      # Docker image here
     steps:
-      - checkout # Checkout code from git
-      - restore_cache: # Restore from cache
-          keys: [test-backend]
+      # Checkout code from git
+      # Restore from cache
       # Your job code here
-      - run:
-          name: Back-end test
-          command: |
-             # Your code here
-             npm run test:cov
+
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
     steps:
-      - checkout # Checkout code from git
+      # Checkout code from git
       - run:
           name: Ensure back-end infrastructure exists
           command: |
@@ -285,7 +260,6 @@ cleanup:
             then
               # your code here
             fi
-
 
 workflows:
   default:

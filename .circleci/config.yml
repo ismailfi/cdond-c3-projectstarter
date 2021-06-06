@@ -48,26 +48,24 @@ jobs:
             cd frontend
             npm i
             npm run build
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
       - slack/notify:
           custom: |
             {
-              "blocks": [
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "plain_text",
-                      "text": "*This is a text notification*",
-                      "emoji": true
-                    }
-                  ]
+             "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Job succceded ! 🥳",
+                  "emoji": true
                 }
+              }
               ]
             }
-          event: always
+          event: pass
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
   build-backend:
     docker:
@@ -87,9 +85,20 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
       - slack/notify:
-          channel: C011DG6QB8W
+          custom: |
+            {
+             "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "Job Failed ! ☹️",
+                  "emoji": true
+                }
+              }
+              ]
+            }
           event: fail
-          template: basic_fail_1
   test-frontend:
     docker:
       # Docker image here
@@ -122,14 +131,6 @@ jobs:
              cd backend
              npm i
              npm run test
-      - slack/notify:
-          channel: C011DG6QB8W
-          event: fail
-          template: basic_fail_1
-      - slack/notify:
-          channel: C011DG6QB8W
-          event: pass
-          template: basic_success_1
   scan-frontend:
     docker:
        # Docker image here

@@ -48,16 +48,10 @@ jobs:
             cd frontend
             npm i
             npm run build
+      - slack/status
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
-      - slack/notify:
-          event: fail
-          mentions: '@dev'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
 
   build-backend:
     docker:
@@ -73,18 +67,10 @@ jobs:
               cd backend
               npm i
               npm run build
+      - slack/status
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
-      - slack/notify:
-          event: fail
-          mentions: '@dev'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
-
-
   test-frontend:
     docker:
       # Docker image here
@@ -117,13 +103,7 @@ jobs:
              cd backend
              npm i
              npm run test
-      - slack/notify:
-          event: fail
-          mentions: '@dev'
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: basic_success_1
+      - slack/status
   scan-frontend:
     docker:
        # Docker image here
@@ -159,12 +139,12 @@ workflows:
     jobs:
       - build-frontend:
           context:
-              - slack
+            - slack
       - build-backend :
           context:
             - slack
-      - test-frontend:
-          requires: [build-frontend]
+      #- test-frontend:
+       #   requires: [build-frontend]
       - test-backend:
           context:
             - slack

@@ -206,11 +206,7 @@ jobs:
                --request PUT \
                --data ${PUBLIC_DNS} \
                https://api.memstash.io/values/public_dns
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - inventory.txt
+               exit 0
       # Here's where you will add some code to rollback on failure
 
 workflows:

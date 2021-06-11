@@ -209,6 +209,42 @@ jobs:
                exit 0
       # Here's where you will add some code to rollback on failure
 
+    configure-infrastructure:
+      docker:
+        # Docker image here that supports Ansible
+         - image: python:3.7-alpine3.12
+      steps:
+        - checkout
+        # Add ssh keys with fingerprint
+        - add_ssh_keys:
+          fingerprints:
+            - "10:88:97:42:1e:de:c6:85:5e:0f:2c:c7:96:32:3d:67"
+        # attach workspace
+        - attach_workspace:
+            at: ~/project
+        - run:
+            name: Install system dependencies
+          command: |
+            apk add --no-cache curl
+            apk add --no-cache --upgrade bash
+            apk add --no-cache --update npm
+            pip3 install awscli
+        - run:
+          name: Configure server
+          command: |
+            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            echo ${PUBLIC_DNS}
+            export API_URL="http://${PUBLIC_DNS}:3030"
+            echo API_URL=${API_URL}
+            cd frontend
+            npm install
+            npm run build
+        - run:
+          name: Copy built frontend files to the S3 bucket
+          command: |
+            aws s3 cp ./frontend/dist s3://udapeople-s3bucket-${CIRCLE_WORKFLOW_ID}/ --recursive
+        # Here's where you will add some code to rollback on failure
+
 workflows:
   default:
     jobs:
@@ -229,4 +265,7 @@ workflows:
       - scan-frontend:
           requires: [build-frontend]
       - deploy-infrastructure:
-          requires: [test-backend, scan-frontend, scan-backend]
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [test-feature-branch]

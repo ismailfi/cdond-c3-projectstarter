@@ -194,7 +194,7 @@ jobs:
             --region eu-central-1 \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople" \
-            --output text >> .circleci/ansible/inventory.txt
+            --output text >> .circleci/ansible/inventory
             exit 0
       - run:
           name: Get and save public DNS of EC2 instance to https://memstash.io/
@@ -211,7 +211,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: python:3.7-alpine3.12
+      - image: python:3.9.0-alpine
     steps:
       - checkout
       - run:
@@ -227,18 +227,20 @@ jobs:
           command: |
             PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
             echo ${PUBLIC_DNS}
+            echo ${CIRCLE_WORKFLOW_ID}
             cd .circleci/ansible/
-            echo "[all]" > ./inventory.txt
-            echo ${PUBLIC_DNS} >> ./inventory.txt
-            cat ./inventory.txt
+            echo "[all]" > ./inventory
+            echo ${PUBLIC_DNS} >> ./inventory
+            cat ./inventory
       - add_ssh_keys:
           fingerprints: ["10:88:97:42:1e:de:c6:85:5e:0f:2c:c7:96:32:3d:67"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - run:
           name: Configure server via ansible to deploy the backend
+          no_output_timeout: 30m
           command: |
             printenv >> ./backend/.env
             cd .circleci/ansible/
-            ansible-playbook -i ./inventory.txt ./main.yml
+            ansible-playbook -i ./inventory configure-server.yml
 
 workflows:
   default:

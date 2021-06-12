@@ -215,7 +215,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["19:e0:15:5e:ef:3b:9c:95:32:c5:c5:11:c5:36:d5:55"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
+          fingerprints: ["f6:a3:a2:0a:f2:8d:3d:8b:59:60:58:3b:a7:ce:f0:02"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - attach_workspace:
           at: ~/
       - run:

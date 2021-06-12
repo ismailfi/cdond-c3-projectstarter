@@ -233,14 +233,14 @@ jobs:
             echo ${PUBLIC_DNS} >> ./inventory
             cat ./inventory
       - add_ssh_keys:
-          fingerprints: ["10:88:97:42:1e:de:c6:85:5e:0f:2c:c7:96:32:3d:67"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
+          fingerprints: ["19:e0:15:5e:ef:3b:9c:95:32:c5:c5:11:c5:36:d5:55"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - run:
           name: Configure server via ansible to deploy the backend
           no_output_timeout: 30m
           command: |
             printenv >> ./backend/.env
             cd .circleci/ansible/
-            ansible-playbook -i ./inventory configure-server.yml
+            ansible-playbook -i inventory configure-server.yml
 
 workflows:
   default:

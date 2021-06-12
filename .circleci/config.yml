@@ -27,7 +27,7 @@ commands:
             SUCCESS = 1
             if(( $SUCCESS==1 ));
             then
-            #  cd ~/backend
+            #  cd ~/project/backend
             #  npm install
             #  Add revert code here. You can find this in the Getting Started section.
               exit 1
@@ -214,6 +214,10 @@ jobs:
       - image: python:3.9.0-alpine
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["19:e0:15:5e:ef:3b:9c:95:32:c5:c5:11:c5:36:d5:55"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install system dependencies
           command: |
@@ -232,13 +236,12 @@ jobs:
             echo "[all]" > ./inventory
             echo ${PUBLIC_DNS} >> ./inventory
             cat ./inventory
-      - add_ssh_keys:
-          fingerprints: ["19:e0:15:5e:ef:3b:9c:95:32:c5:c5:11:c5:36:d5:55"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - run:
           name: Configure server via ansible to deploy the backend
           no_output_timeout: 30m
           command: |
             printenv >> ./backend/.env
+            cat ./backend/.env
             cd .circleci/ansible/
             ansible-playbook -i inventory configure-server.yml
 

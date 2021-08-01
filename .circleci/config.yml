@@ -184,7 +184,7 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-    
+
       - run:
           name: Add back-end ip to ansible inventory
           command: |
@@ -217,13 +217,10 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install system dependencies
+          name: Install dependencies
           command: |
-            apk add --no-cache curl
-            apk add --no-cache --upgrade bash
-            apk add --no-cache --update ansible
-            apk add --no-cache openssh-client
-            pip3 install awscli
+            apk add --update ansible
+            pip install awscli
       - run:
           name: Create dotenv file
           command: |
@@ -240,8 +237,7 @@ jobs:
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
       - run:
-          name: Configure server via ansible to deploy the backend
-          no_output_timeout: 30m
+          name: Configure server
           command: |
             cat ".circleci/ansible/inventory.txt"
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml

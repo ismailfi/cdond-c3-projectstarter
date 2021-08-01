@@ -217,7 +217,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["f6:a3:a2:0a:f2:8d:3d:8b:59:60:58:3b:a7:ce:f0:02"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - attach_workspace:
-          at: ~/
+          at: .
       - run:
           name: Install system dependencies
           command: |
@@ -227,23 +227,26 @@ jobs:
             apk add --no-cache openssh-client
             pip3 install awscli
       - run:
-          name: Get the public DNS of EC2 instance from https://memstash.io/
+          name: Create dotenv file
           command: |
-            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-            echo ${PUBLIC_DNS}
-            echo ${CIRCLE_WORKFLOW_ID}
-            cd .circleci/ansible/
-            echo "[all]" > ./inventory
-            echo ${PUBLIC_DNS} >> ./inventory
-            cat ./inventory
+            cd backend/
+            echo > ".env"
+            echo ENVIRONMENT="production" >> ".env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
       - run:
           name: Configure server via ansible to deploy the backend
           no_output_timeout: 30m
           command: |
-            printenv >> ./backend/.env
-            cat ./backend/.env
-            cd .circleci/ansible/
-            ansible-playbook -i inventory configure-server.yml
+            cat ".circleci/ansible/inventory.txt"
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
 
 workflows:
   default:

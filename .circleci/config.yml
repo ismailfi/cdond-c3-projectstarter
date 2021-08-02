@@ -167,10 +167,6 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - run:
-          name: Install tar and gzip
-          command: |
-            yum -y install tar gzip
       # - run:
       #     name: Ensure back-end infrastructure exists
       #     command: |
@@ -190,20 +186,16 @@ jobs:
       #         --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
 
       - run:
-          name: Get and save public IP of EC2 instance to https://memstash.io/
+          name: save public IP of EC2 instance to inventory file
           command: |
             PUBLIC_IPS=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --filters 'Name=tag:Name,Values=backend-*' --query "Reservations[*].Instances[0].PublicIpAddress" --output text)
-            echo ${public_ips}
-            curl -H "Content-Type: text/plain" \
-              -H "token: ${CIRCLE_WORKFLOW_ID}" \
-              --request PUT \
-              --data ${PUBLIC_IPS} \
-              https://api.memstash.io/values/public_ips
-
-            cd .circleci/ansible/
             echo "[all]" > ./inventory.txt
             echo ${PUBLIC_IPS} >> ./inventory.txt
             cat ./inventory.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .circleci/ansible/inventory.txt
 
 
       # Here's where you will add some code to rollback on failure
@@ -226,14 +218,9 @@ jobs:
             apk add --no-cache openssh-client
             pip3 install awscli
       - run:
-          name: Get the public DNS of EC2 instance from https://memstash.io/
+          name: Get the public IP of EC2
           command: |
-            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-            echo ${PUBLIC_DNS}
-            cd .circleci/ansible/
-            echo "[all]" > ./inventory
-            echo ${PUBLIC_DNS} >> ./inventory
-            cat ./inventory
+            cat .circleci/ansible/inventory.txt
       - run:
           name: Create dotenv file
           command: |

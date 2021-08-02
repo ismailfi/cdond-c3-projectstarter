@@ -188,9 +188,19 @@ jobs:
       - run:
           name: Get and save public IP of EC2 instance to https://memstash.io/
           command: |
-            PUBLIC_DNS=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --filters 'Name=tag:Name,Values=backend-*' --query "Reservations[*].Instances[0].PublicDnsName" --output text)
-            echo ${PUBLIC_DNS}
-            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT  --data ${PUBLIC_DNS}   https://api.memstash.io/values/public_dns
+            PUBLIC_IPS=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --filters 'Name=tag:Name,Values=backend-*' --query "Reservations[*].Instances[0].PublicIpAddress" --output text)
+            echo ${public_ips}
+            curl -H "Content-Type: text/plain" \
+              -H "token: ${CIRCLE_WORKFLOW_ID}" \
+              --request PUT \
+              --data ${PUBLIC_IPS} \
+              https://api.memstash.io/values/public_ips
+
+            cd .circleci/ansible/
+            echo "[all]" > ./inventory.txt
+            echo ${PUBLIC_IPS} >> ./inventory.txt
+            cat ./inventory.txt
+
 
       # Here's where you will add some code to rollback on failure
 

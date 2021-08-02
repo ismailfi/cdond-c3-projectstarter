@@ -196,17 +196,16 @@ jobs:
                --data ${PUBLIC_IPS} \
                https://api.memstash.io/values/public_ips
 
-      # - run:
-      #     name: Get and save public DNS of EC2 instance to https://memstash.io/
-      #     command: |
-      #       PUBLIC_DNS=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --filters 'Name=tag:Name,Values=backend-*' --query "Reservations[*].Instances[0].PublicDnsName" --output text)
-      #       echo ${public_dns}
-      #       curl -H "Content-Type: text/plain" \
-      #          -H "token: ${CIRCLE_WORKFLOW_ID}" \
-      #          --request PUT \
-      #          --data ${PUBLIC_DNS} \
-              #  https://api.memstash.io/values/public_dns
-
+      - run:
+           name: Get and save public DNS of EC2 instance to https://memstash.io/
+           command: |
+             PUBLIC_DNS=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} --filters 'Name=tag:Name,Values=backend-*' --query "Reservations[*].Instances[0].PublicDnsName" --output text)
+             echo ${public_dns}
+             curl -H "Content-Type: text/plain" \
+             -H "token: ${CIRCLE_WORKFLOW_ID}" \
+             --request PUT \
+             --data ${PUBLIC_DNS} \
+             https://api.memstash.io/values/public_dns
       # Here's where you will add some code to rollback on failure
 
   configure-infrastructure:
@@ -225,11 +224,11 @@ jobs:
       - run:
           name: Get the public DNS of EC2 instance from https://memstash.io/
           command: |
-            PUBLIC_IPS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_ips)
-            echo ${PUBLIC_IPS}
+            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            echo ${PUBLIC_DNS}
             cd .circleci/ansible/
             echo "[all]" > ./inventory.txt
-            echo ${PUBLIC_IPS} >> ./inventory.txt
+            echo ${PUBLIC_DNS} >> ./inventory.txt
             cat ./inventory.txt
       - add_ssh_keys:
           fingerprints: ["f6:a3:a2:0a:f2:8d:3d:8b:59:60:58:3b:a7:ce:f0:02"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys

@@ -225,7 +225,7 @@ jobs:
       - run:
           name: Get the public DNS of EC2 instance from https://memstash.io/
           command: |
-            PUBLIC_IPS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            PUBLIC_IPS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_ips)
             echo ${PUBLIC_IPS}
             cd .circleci/ansible/
             echo "[all]" > ./inventory.txt

@@ -1,5 +1,5 @@
 - name: "Udapeople Server Configurations"
-  hosts: web
+  hosts: all
   user: ubuntu
 
   vars:

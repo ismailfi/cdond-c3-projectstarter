@@ -184,8 +184,7 @@ jobs:
               --tags project=udapeople \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
-
-<<<<<<< HEAD
+            
       # - run:
       #     name: Get and save public IP of EC2 instance to https://memstash.io/
       #     command: |
@@ -208,7 +207,6 @@ jobs:
                --data ${PUBLIC_DNS} \
                https://api.memstash.io/values/public_dns
 
-=======
       - run:
           name: Get and save public IP of EC2 instance to https://memstash.io/
           command: |
@@ -230,7 +228,6 @@ jobs:
              --request PUT \
              --data ${PUBLIC_DNS} \
              https://api.memstash.io/values/public_dns
->>>>>>> c4ab44aa40dc0da5a2e15b021d2a27f7c7f0a3fd
       # Here's where you will add some code to rollback on failure
 
   configure-infrastructure:

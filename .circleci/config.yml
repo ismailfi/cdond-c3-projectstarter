@@ -255,8 +255,7 @@ jobs:
           name: Run migrations
           command: |
             # Your code here
-                 cd backend
-            npm install
+            cd backend
             touch migration-output.txt
             npm run migrations >> migration-output.txt
             cat migration-output.txt

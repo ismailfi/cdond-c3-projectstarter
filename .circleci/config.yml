@@ -254,7 +254,18 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            cd backend
+            cd backend/
+            echo > ".env"
+            echo ENVIRONMENT="production" >> ".env"
+            echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> ".env"
+            echo TYPEORM_ENTITIES=$TYPEORM_ENTITIES >> ".env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             npm install
             npm run migrations > migrations.txt
             cat migrations.txt
@@ -264,7 +275,7 @@ jobs:
           command: |
             cd backend
             cat migrations.txt
-            if [ `grep -c "has been executed successfully" migration-output.txt` -gt 0 ]
+            if [ `grep -c "has been executed successfully" migrations.txt` -gt 0 ]
             then
             curl -H "Content-Type: text/plain" \
               -H "token: 8bf4907c-a62e-4f68-a512-929e3af55432" \

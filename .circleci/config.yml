@@ -254,7 +254,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            cd backend/
+            cd backend
             echo > ".env"
             echo ENVIRONMENT="production" >> ".env"
             echo TYPEORM_CONNECTION=$TYPEORM_CONNECTION >> ".env"

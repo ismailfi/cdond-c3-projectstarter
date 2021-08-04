@@ -187,10 +187,7 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory and save to https://memstash.io
           command: |
-<<<<<<< HEAD
               yum -y install tar gzip jq npm
-=======
->>>>>>> b1eb7611c0d12a637b3802a72585afa8f47e17de
               PUBLIC_IP=$(aws ec2 describe-instances --region ${AWS_DEFAULT_REGION} \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -203,10 +200,6 @@ jobs:
                   --request PUT \
                   --data ${PUBLIC_IP} \
                   https://api.memstash.io/values/public_ip
-<<<<<<< HEAD
-
-=======
->>>>>>> b1eb7611c0d12a637b3802a72585afa8f47e17de
       - persist_to_workspace:
           root: .
           paths:

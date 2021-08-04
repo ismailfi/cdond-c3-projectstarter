@@ -1,0 +1,18 @@
+- name: "Copy Compiled Back-End Files to EC2"
+  become: true
+  copy:
+    src: /root/project/backend.tar
+    dest: ~/backend/
+
+- name: "deploy backend"
+  become_user: true
+  unarchive:
+    src: root/project/backend/backend.tar
+    dest: ~/backend/
+
+- name: "run backend"
+  become_user: true
+  shell: |
+    cd ~/backend/
+    npm i
+    pm2 start npm -- run  start

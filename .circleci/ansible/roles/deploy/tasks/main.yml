@@ -2,17 +2,17 @@
   become: true
   copy:
     src: /root/project/backend.tar
-    dest: ~/backend/
+    dest: /home/ubuntu
 
-- name: "deploy backend"
+- name: "Unarchive compiled files"
   become_user: true
   unarchive:
-    src: root/project/backend/backend.tar
-    dest: ~/backend/
+    src: /home/ubuntu/backend.tar
+    dest: /home/ubuntu/backend/
 
 - name: "run backend"
   become_user: true
   shell: |
-    cd ~/backend/
+    cd backend
     npm i
     pm2 start npm -- run  start

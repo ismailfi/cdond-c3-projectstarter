@@ -1,14 +1,28 @@
-- name: "Copy Compiled Back-End Files to EC2"
+# - name: "Copy Compiled Back-End Files to EC2"
+#   become: true
+#   copy:
+#     src: /root/project/backend.tar
+#     dest: /home/ubuntu
+
+# - name: "Unarchive compiled files"
+#   become_user: true
+#   unarchive:
+#     src: /root/project/backend.tar
+#     dest: /home/ubuntu/backend/
+
+
+
+- name: "Copy Compiled Back-End Files to EC2 and Extract files"
   become: true
   copy:
     src: /root/project/backend.tar
-    dest: /home/ubuntu
-
-- name: "Unarchive compiled files"
-  become_user: true
-  unarchive:
-    src: /home/ubuntu/backend.tar
     dest: /home/ubuntu/backend/
+
+# - name: "un tar"
+#   become: true
+#   shell: |
+#     cd backend/
+#     tar -xvf backend.tar
 
 - name: "run backend"
   become_user: true

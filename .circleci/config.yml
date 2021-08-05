@@ -12,7 +12,7 @@ commands:
           when: on_fail
           command: |
             # Your code here
-            exit 1
+
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -395,7 +395,7 @@ jobs:
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.eu-central-1.amazonaws.com"
             if ( curl -s ${URL} | grep "Welcome" )
             then
-              return 0
+              return 1
             else
               return 1
             fi

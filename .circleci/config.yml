@@ -449,9 +449,9 @@ jobs:
               echo deleting all files at S3 bucket udapeople-${OLD_WORKFLOW_ID}
 
               echo deleting stack udapeople-frontend-${OLD_WORKFLOW_ID}
-              aws cloudformation delete-stack --stack-name udapeople-frontend-${OLD_WORKFLOW_ID}
+              aws  --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name udapeople-frontend-${OLD_WORKFLOW_ID}
               echo deleting stack udapeople-backend-${OLD_WORKFLOW_ID}
-              aws cloudformation delete-stack --stack-name udapeople-backend-${OLD_WORKFLOW_ID}
+              aws --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name udapeople-backend-${OLD_WORKFLOW_ID}
             fi
 workflows:
   default:

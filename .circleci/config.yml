@@ -440,19 +440,25 @@ jobs:
             export OLD_WORKFLOW_ID=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
             echo Old workflow ID : "${OLD_WORKFLOW_ID}"
             export STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter UPDATE_COMPLETE CREATE_COMPLETE --output text)
+            echo STACKS: "$STACKS"
       - run:
           name: Remove old stacks and files
           command: |
             echo "Delete old infrastructure"
-            if [[ "${STACKS[@]}" =~ "${OLD_CIRCLE_WORKFLOW_ID}" ]]
+            if [ ! -z $OLD_WORKFLOW_ID ]
             then
               echo deleting all files at S3 bucket udapeople-${OLD_WORKFLOW_ID}
-
-              echo deleting stack udapeople-frontend-${OLD_WORKFLOW_ID}
-              aws  --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name udapeople-frontend-${OLD_WORKFLOW_ID}
+              aws s3 rm s3://udapeople-${OLD_WORKFLOW_ID} --recursive
+              aws s3 rb s3://udapeople-${OLD_WORKFLOW_ID} --force
               echo deleting stack udapeople-backend-${OLD_WORKFLOW_ID}
-              aws --region ${AWS_DEFAULT_REGION} cloudformation delete-stack --stack-name udapeople-backend-${OLD_WORKFLOW_ID}
+              aws cloudformation --region eu-central-1 delete-stack --stack-name udapeople-backend-${OLD_WORKFLOW_ID}
+              echo deleting stack udapeople-frontend-${OLD_WORKFLOW_ID}
+              aws cloudformation --region eu-central-1 delete-stack --stack-name udapeople-frontend-${OLD_WORKFLOW_ID}
+              echo "Stacks deleted succesfully"
+            else
+              echo "Fresh New Stacks"
             fi
+          no_output_timeout: 30m
 workflows:
   default:
     jobs:

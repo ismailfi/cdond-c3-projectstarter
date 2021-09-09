@@ -51,20 +51,9 @@ jobs:
             npm i && npm update
             npm run build
       - slack/notify:
-          custom: |
-            {
-             "blocks": [
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": "Job succceded ! 🥳",
-                  "emoji": true
-                }
-              }
-              ]
-            }
+          channel: C011DG6QB8W
           event: pass
+          template: basic_success_1
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -87,20 +76,10 @@ jobs:
           paths: [backend/node_modules]
           key: backend-build
       - slack/notify:
-          custom: |
-            {
-             "blocks": [
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": "Job Failed ! ☹️",
-                  "emoji": true
-                }
-              }
-              ]
-            }
+          channel: C011DG6QB8W
           event: fail
+          template: basic_fail_1
+
   test-frontend:
     docker:
       # Docker image here
@@ -147,7 +126,7 @@ jobs:
           command: |
              # Your code here
              cd frontend
-             npm audit fix --audit-level=critical --force
+             npm audit --audit-level=critical --prefix frontend
   scan-backend:
     docker:
        # Docker image here
@@ -162,7 +141,7 @@ jobs:
           command: |
              # Your code here
              cd backend
-             npm audit fix --audit-level=critical --force
+             npm audit --audit-level=critical --prefix backend
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI

@@ -48,7 +48,7 @@ jobs:
           command: |
             # Your code here
             cd frontend
-            npm i
+            npm i && npm update
             npm run build
       - slack/notify:
           custom: |
@@ -147,7 +147,7 @@ jobs:
           command: |
              # Your code here
              cd frontend
-             npm audit fix --audit-level=critical
+             npm audit fix --audit-level=critical --force
   scan-backend:
     docker:
        # Docker image here

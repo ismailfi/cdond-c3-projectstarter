@@ -162,7 +162,7 @@ jobs:
           command: |
              # Your code here
              cd backend
-             npm audit fix --audit-level=critical
+             npm audit fix --audit-level=critical --force
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI

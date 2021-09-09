@@ -6,7 +6,7 @@ URL01:
 
 URL02:
   public URL for my S3 Bucket:
-    http://udapeople-314b0c36-07d6-4f9f-8974-c117fef8d462.s3-website.eu-central-1.amazonaws.com/
+    http://udapeople-4de20134-7b26-4aa3-9bab-69069342cb0a.s3-website.eu-central-1.amazonaws.com
 
 URL03:
   public URL for my CloudFront distribution:
@@ -14,7 +14,8 @@ URL03:
 
 URL04:
   public URL for my backend server in EC2:
-    http://3.67.75.78:3030
+    http://18.159.124.32:3030
+    http://ec2-18-159-124-32.eu-central-1.compute.amazonaws.com:3030
 
 URL05:
   URL to Prometheus server:

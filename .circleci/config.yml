@@ -125,8 +125,7 @@ jobs:
           name: Code Analysis
           command: |
              # Your code here
-             cd frontend
-             npm audit --audit-level=critical --prefix frontend
+             cd frontend && npm audit --audit-level=critical
   scan-backend:
     docker:
        # Docker image here
@@ -140,8 +139,7 @@ jobs:
           name: Code Analysis
           command: |
              # Your code here
-             cd backend
-             npm audit --audit-level=critical --prefix backend
+             cd backend && npm audit --audit-level=critical
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
@@ -435,9 +433,9 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend:
-          context:
-            - slack
+      # - build-frontend:
+      #     context:
+      #       - slack
       - build-backend :
           context:
             - slack
@@ -447,8 +445,8 @@ workflows:
       #     context:
       #       - slack
       #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
       # - deploy-infrastructure:

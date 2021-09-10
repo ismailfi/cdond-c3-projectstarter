@@ -193,7 +193,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["f6:a3:a2:0a:f2:8d:3d:8b:59:60:58:3b:a7:ce:f0:02"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
+          fingerprints: ["48:ac:f9:16:c3:e5:19:19:c1:34:94:63:88:ab:f6:27"] # get it from CircleCI -> Project Settings -> SSH Keys -> Additional SSH Keys
       - attach_workspace:
           at: .
       - run:
@@ -315,7 +315,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["f6:a3:a2:0a:f2:8d:3d:8b:59:60:58:3b:a7:ce:f0:02"]
+          fingerprints: ["48:ac:f9:16:c3:e5:19:19:c1:34:94:63:88:ab:f6:27"]
       - attach_workspace:
           at: .
       - run:
@@ -482,8 +482,8 @@ workflows:
           filters:
             branches:
               only: master
-      # - cleanup:
-      #     requires: [cloudfront-update]
-      #     filters:
-      #       branches:
-      #         only: master
+      - cleanup:
+          requires: [cloudfront-update]
+          filters:
+            branches:
+              only: master

@@ -295,6 +295,7 @@ jobs:
             cd frontend/
             BACKENDIP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_ip)
             echo API_URL="http://${BACKENDIP}:3030" > ".env"
+            echo NODE_ENV=production >> ".env"
             cat .env
       - run:
           name: Deploy frontend objects
@@ -303,7 +304,7 @@ jobs:
             cd frontend
             npm i
             npm run build
-            aws s3 sync ./dist s3://"udapeople-${CIRCLE_WORKFLOW_ID}"
+            aws s3 sync ./dist s3://"udapeople-${CIRCLE_WORKFLOW_ID}" --recursive
       # Here's where you will add some code to rollback on failure
       - revert-migrations
       - destroy-environment
@@ -436,53 +437,53 @@ workflows:
       # - build-frontend:
       #     context:
       #       - slack
-      - build-backend :
-          context:
-            - slack
+      # - build-backend :
+      #     context:
+      #       - slack
       # - test-frontend:
       #     requires: [build-frontend]
       # - test-backend:
       #     context:
       #       - slack
       #     requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
+      # - scan-backend:
+      #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - deploy-frontend:
-      #     requires: [run-migrations]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - deploy-backend:
-      #     requires: [run-migrations]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
-      # - cloudfront-update:
-      #     requires: [smoke-test]
-      #     filters:
-      #       branches:
-      #         only: master
-      # - cleanup:
-      #     requires: [cloudfront-update]
-      #     filters:
-      #       branches:
-      #         only: master
+      - deploy-infrastructure:
+          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: master
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          filters:
+            branches:
+              only: master
+      - run-migrations:
+          requires: [configure-infrastructure]
+          filters:
+            branches:
+              only: master
+      - deploy-frontend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: master
+      - deploy-backend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: master
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+          filters:
+            branches:
+              only: master
+      - cleanup:
+          requires: [cloudfront-update]
+          filters:
+            branches:
+              only: master

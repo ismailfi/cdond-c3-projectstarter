@@ -1,19 +1,8 @@
-# - name: "Copy Compiled Back-End Files to EC2"
-#   become: true
-#   copy:
-#     src: /root/project/backend.tar
-#     dest: /home/ubuntu
-
-# - name: "Unarchive compiled files"
-#   become_user: true
-#   unarchive:
-#     src: /root/project/backend.tar
-#     dest: /home/ubuntu/backend/
-
-
-
 - name: "Copy Compiled Back-End Files to EC2 and Extract files"
+  hosts : all
+  user: ubuntu
   become: true
+
   copy:
     src: /root/project/backend.tar
     dest: /home/ubuntu/backend/
@@ -24,10 +13,8 @@
 #     cd backend/
 #     tar -xvf backend.tar
 
-
-- name: "run backend"
+  - name: "use pm2 to run the node server"
   become_user: true
   shell: |
-    cd backend
-    npm i
-    pm2 start npm -- run  start
+    cd /home/ubuntu/backend
+    pm2 start npm -- run "start:dev"

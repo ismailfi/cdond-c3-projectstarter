@@ -304,7 +304,7 @@ jobs:
             cd frontend
             npm i
             npm run build
-            aws s3 sync ./dist s3://"udapeople-${CIRCLE_WORKFLOW_ID}" --recursive
+            aws s3 sync ./dist s3://"udapeople-${CIRCLE_WORKFLOW_ID}"
       # Here's where you will add some code to rollback on failure
       - revert-migrations
       - destroy-environment
@@ -334,7 +334,7 @@ jobs:
       - run:
           name: "tar archiv"
           command: |
-            tar -cf backend.tar ./backend/dist
+            tar -cf backend.tar ./backend/
       - run:
           name: Deploy backend
           command: |

@@ -209,6 +209,10 @@ jobs:
           command: |
             cat .circleci/ansible/inventory.txt
       - run:
+          name: "tar archiv"
+          command: |
+            tar -cf backend.tar ./backend/
+      - run:
           name: Create dotenv file
           command: |
             cd backend/
@@ -325,16 +329,6 @@ jobs:
             apk add --update npm
             apk add --update curl
             pip3 --no-cache-dir install awscli
-      - run:
-          name: Build Backend
-          command: |
-            cd backend
-            npm i
-            npm run build
-      - run:
-          name: "tar archiv"
-          command: |
-            tar -cf backend.tar ./backend/
       - run:
           name: Deploy backend
           command: |

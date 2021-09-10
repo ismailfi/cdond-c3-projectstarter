@@ -1,12 +1,21 @@
-- name: "Copy Compiled Back-End Files to EC2 and Extract files"
+- name: "build package"
   become: true
-  copy:
-    src: /root/project/backend.tar
-    dest: /home/ubuntu/backend/
-
-- name: "run backend"
-  become_user: true
   shell: |
-    cd /home/ubuntu/backend/
-    cd backend
-    pm2 start npm -- run  start
+    cd /home/ubuntu/backend/backend
+    npm run build
+- name: "run migrations and save status to https://memstash.io/"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend
+    npm run migrations > migrations.txt
+    cat migrations.txt
+    export CIRCLE_WORKFLOW_ID="{{ CIRCLE_WORKFLOW_ID }}"
+    echo CIRCLE_WORKFLOW_ID=${CIRCLE_WORKFLOW_ID}
+    curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID}" --request PUT --data $( grep -c "No migrations are pending" migrations.txt ) https://api.memstash.io/values/migration_status
+  register: migration_output
+
+- name: "use pm2 to run the node server"
+  become: true
+  shell: |
+    cd /home/ubuntu/backend/backend
+    pm2 start npm -- run "start:dev"

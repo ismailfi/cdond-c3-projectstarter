@@ -209,10 +209,6 @@ jobs:
           command: |
             cat .circleci/ansible/inventory.txt
       - run:
-          name: "tar archiv"
-          command: |
-            tar -cf backend.tar ./backend/
-      - run:
           name: Create dotenv file
           command: |
             cd backend/
@@ -227,6 +223,10 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+      - run:
+          name: "tar archiv"
+          command: |
+            tar -cf backend.tar ./backend/
       - run:
           name: Configure server via ansible to deploy the backend
           command: |
@@ -423,7 +423,7 @@ jobs:
                 echo deleting stack udapeople-frontend-${OLD_WORKFLOW_ID}
                 aws cloudformation --region eu-central-1 delete-stack --stack-name udapeople-frontend-${OLD_WORKFLOW_ID}
                 echo "Stacks deleted succesfully"
-               fi
+              fi
           no_output_timeout: 30m
 workflows:
   default:

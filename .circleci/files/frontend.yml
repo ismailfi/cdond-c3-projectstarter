@@ -1,5 +1,6 @@
 Description: >
   UdaPeople frontend stack.
+
 Parameters:
   ID:
     Description: Unique identifier.
@@ -14,6 +15,7 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: 404.html
+
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -30,5 +32,3 @@ Outputs:
   WebsiteURL:
     Value: !GetAtt WebsiteBucket.WebsiteURL
     Description: URL for website hosted on S3
-    Export:
-      Name: !Sub "${AWS::StackName}-S3BucketWebsiteURL"
